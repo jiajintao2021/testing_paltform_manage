@@ -78,3 +78,5 @@ docker-compose-local.yml
 *.swp
 
 .qiniu_pythonsdk_hostscache.json
+# local
+venv/
