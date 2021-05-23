@@ -1,4 +1,4 @@
-from django.contrib.auth.base_user import AbstractBaseUser
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
@@ -8,16 +8,17 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
 
-class CustomUserManager(UserManager):
+class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **kwargs):
+        print(email, 'em', password, 'pa', kwargs)
         if not email:
             raise ValueError('电子邮箱是必填的！')
         user = self.model(
             email=self.normalize_email(email)
         )
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password=None, **kwargs):
@@ -26,7 +27,7 @@ class CustomUserManager(UserManager):
         user.name = 'admin'
         user.is_superuser = True
         user.staff = True
-        user.save()
+        user.save(using=self._db)
         return user
 
 

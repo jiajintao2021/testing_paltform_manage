@@ -1,0 +1,15 @@
+.left-bar {
+    width: 11%;
+    background: #1f283e;
+}
+
+
+.menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu div {
+    display: none;
+}

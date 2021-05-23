@@ -16,10 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from testing_manage.urls import urlpatterns as urls
+from testing_manage import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('main/', include(urls)),
+    path('testing/', include(urls)),
 ]

@@ -29,6 +29,9 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'testing_manage.CustomUsers'
 
+LOGIN_URL = '/testing/login/'
+LOGIN_REDIRECT_URL = '/testing/index/'
+
 
 # Application definition
 
@@ -83,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'testing_manage_platform',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'root',
         'HOST': '127.0.0.1',
         'PORT': 3306,
     }

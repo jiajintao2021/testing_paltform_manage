@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>TestingLogin</title>
+        <script src="{% static 'jq_3.6.0.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'login/login.css' %}">
+    </head>
+    <body>
+        <div class="color1"></div>
+        <h1>Testing Manage Platform</h1>
+        <div class="sub-main-w3">
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <h2>Login Form</h2>
+                <div class="form-content errors">
+                    {% if form.errors %}
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+
+{#                        {{ form.non_field_errors }}#}
+                    {% endif %}
+{#                    {{ form.name_or_field.errors }}#}
+{#                    <p>{{ form.name_of_field.errors }}</p>#}
+                </div>
+                <div class="form-content">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+                <div class="form-content">
+                    <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                    {{ form.password }}
+                </div>
+                <input type="submit" value="登录">
+            </form>
+        </div>
+    </body>
+</html>

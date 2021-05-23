@@ -6,12 +6,96 @@
     <meta charset="UTF-8">
 
     <title>Testing</title>
-
+    <link rel="stylesheet" href="{% static 'content/global.css' %}">
+    <link rel="stylesheet" href="{% static 'content/header-bar.css' %}">
+    <link rel="stylesheet" href="{% static 'content/left-bar.css' %}">
+    <link rel="stylesheet" href="{% static 'content/content.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+    <script src="{% static 'jq_3.6.0.js' %}"></script>
 </head>
 <body>
-    {% block main %}
-    {% endblock %}
+    <div class="header-bar">
+        <div class="header-menu">
+            消息
+        </div>
+        <div class="header-menu">
+            个人中心
+        </div>
+        <div class="header-menu header-end">
+            注销
+        </div>
+    </div>
+
+    <div class="row-two">
+        <div class="left-bar">
+            <div class="">User</div>
+            <ul class="menu">
+                <li class="menu-one">
+                    <a href="#">
+                        <i></i>
+                        <p>个人中心</p>
+                    </a>
+                    <div class="hide">
+                        <ul class="">
+                            <li>消息中心</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="menu-one">
+                    <a href="#">
+                        <i></i>
+                        <p>用例管理</p>
+                    </a>
+                    <div class="hide">
+                        <ul>
+                            <li>添加用例</li>
+                            <li>用例列表</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="menu-one">
+                    <a href="#">
+                        <i></i>
+                        <p>测试工具</p>
+                    </a>
+                    <div class="hide">
+                        <ul>
+                            <li>工具列表</li>
+                            <li>使用说明</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="menu-one">
+                    <a href="#">
+                        <i></i>
+                        <p>测试报告</p>
+                    </a>
+                    <div class="hide">
+                        <ul>
+                            <li>Monkey</li>
+                            <li>稳定性测试</li>
+                            <li>自动化测试</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="content-page"></div>
+    </div>
+
+    <script>
+        $('.menu-one').click(
+            function () {
+                $(this).siblings('li').children('div').addClass('hide');
+                console.log($(this).siblings('li').children('div'))
+                if ($(this).children('div').hasClass('hide')) {
+                    $(this).children('div').removeClass('hide');
+                } else {
+                    $(this).children('div').addClass('hide');
+                }
+            }
+        )
+    </script>
 </body>
 </html>
