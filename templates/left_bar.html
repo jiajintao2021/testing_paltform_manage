@@ -1,0 +1,66 @@
+<div class="left-menu">
+    <ul>
+        <li class="menu-one">
+            <a href="#">
+                <i></i>
+                <p>个人中心</p>
+                <div class="left-menu-2 close">
+                    <ul>
+                        <li><a href="#"><p>消息中心</p></a></li>
+                        <li><a href="#"><p>个人管理</p></a></li>
+                    </ul>
+                </div>
+            </a>
+        </li>
+        <li class="menu-one">
+            <a href="#">
+                <i></i>
+                <p>测试管理</p>
+                <div class="left-menu-2 close">
+                    <ul>
+                        <li><a href="#"><P>用例列表</P></a></li>
+                        <li><a href="#"><P>添加用例</P></a></li>
+                    </ul>
+                </div>
+            </a>
+        </li>
+        <li class="menu-one">
+            <a href="#">
+                <i></i>
+                <p>测试工具</p>
+                <div class="left-menu-2 close">
+                    <ul>
+                        <li><a href="#"><p>Monkey</p></a></li>
+                    </ul>
+                </div>
+            </a>
+        </li>
+        <li class="menu-one">
+            <a href="#">
+                <i></i>
+                <p>测试报告</p>
+                <div class="left-menu-2 close">
+                    <ul>
+                        <li><a href="#"><p>Monkey</p></a></li>
+                        <li><a href="#"><p>稳定性测试</p></a></li>
+                        <li><a href="#"><p>自动化测试</p></a></li>
+                    </ul>
+                </div>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script>
+    $('.menu-one').click(
+        function () {
+            $(this).siblings('li').children('div').removeClass('open').addClass('close');
+            var current_e = $(this).children('div');
+            if (current_e.hasClass('close')) {
+                current_e.addClass('open').removeClass('close');
+            } else {
+                current_e.addClass('close').removeClass('open');
+            }
+        }
+    )
+</script>

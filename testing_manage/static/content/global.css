@@ -1,10 +1,54 @@
-body {
+html, body {
     margin: 0;
     padding: 0;
+    border: 0;
     width: 100%;
     height: 100%;
 }
 
-.hide {
+.close {
     display: none;
+}
+
+.open {
+    display: block;
+}
+/* 整个页面 */
+.page {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: start;
+    /*flex-basis: 100%;*/
+    -webkit-flex-basis: 100%;
+    flex: 1;
+    overflow: hidden;
+}
+/* 头导航栏 */
+.header-bar {
+    width: 100%;
+    min-height: 8%;
+    background: #0dcaf0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.header-bar li {
+    display: inline-block;
+}
+
+/* 左侧导航栏以及中间的内容 */
+.row-two {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+}
+
+.row-two .left-menu {
+    width: 12%;
+    height: 100%;
+    background: #0c4128;
 }

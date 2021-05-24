@@ -11,7 +11,6 @@ from django.contrib.auth.models import AbstractUser, UserManager
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **kwargs):
-        print(email, 'em', password, 'pa', kwargs)
         if not email:
             raise ValueError('电子邮箱是必填的！')
         user = self.model(
