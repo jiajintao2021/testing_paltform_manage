@@ -9,7 +9,8 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm, forms, R
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
-from testing_manage.models import CustomUsers
+from testing_manage.models import CustomUsers, FilesModel
+from testing_manage.forms import FilesAddForm
 
 
 class CustomUserCreateForm(forms.ModelForm):
@@ -53,18 +54,9 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserUpdateForm
     add_form = CustomUserCreateForm
 
-    # The fields to be used in displaying the User model.
-    # These override the definitions on the base UserAdmin
-    # that reference specific fields on auth.User.
     list_display = ('email', 'username', 'name', 'is_superuser', 'is_staff', 'is_active', )
     list_filter = ('is_superuser', 'is_staff', )
-    fieldsets = (
-        # (None, {'fields': ('email', 'password')}),
-        # ('Personal info', {'fields': ('date_of_birth',)}),
-        # ('Permissions', {'fields': ('is_admin',)}),
-    )
-    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
-    # overrides get_fieldsets to use this attribute when creating a user.
+    fieldsets = ()
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -76,5 +68,16 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ()
 
 
+class FilesAdmin(admin.ModelAdmin):
+    form = FilesAddForm
+    fieldsets = [
+        (None, {'fields': ['name', 'file', 'desc', 'is_delete']})
+    ]
+    list_display = ['name', 'file', 'is_delete', 'desc', ]
+    list_filter = ['is_delete', ]
+    search_fields = ['name', ]
+
+
 admin.site.register(CustomUsers, CustomUserAdmin)
+admin.site.register(FilesModel, FilesAdmin)
 admin.site.unregister(Group)

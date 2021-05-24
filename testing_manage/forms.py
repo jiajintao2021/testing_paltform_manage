@@ -5,6 +5,8 @@ from django.contrib.auth.views import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from testing_manage.models import FilesModel
+
 
 class LoginForm(AuthenticationForm):
     # username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True}))
@@ -27,8 +29,19 @@ class LoginForm(AuthenticationForm):
 
     def clean_username(self):
         username = self.cleaned_data.get('username', None)
-        print(username)
         if not username:
             raise ValidationError(message=self.error_messages['invalid_login'])
         return username
 
+
+class FilesAddForm(forms.ModelForm):
+
+    class Meta:
+        model = FilesModel
+        fields = '__all__'
+
+    def clean_name(self):
+        name = self.cleaned_data['name']
+        if FilesModel.objects.filter(name=name):
+            raise ValidationError('该名称已经存在！')
+        return name

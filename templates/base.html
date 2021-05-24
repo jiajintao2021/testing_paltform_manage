@@ -7,10 +7,10 @@
 
     <title>Testing</title>
     <link rel="stylesheet" href="{% static 'content/global.css' %}">
-    <link rel="stylesheet" href="{% static 'content/header-bar.css' %}">
-    <link rel="stylesheet" href="{% static 'content/left-bar.css' %}">
+{#    <link rel="stylesheet" href="{% static 'content/header-bar.css' %}">#}
+{#    <link rel="stylesheet" href="{% static 'content/left-bar.css' %}">#}
     <link rel="stylesheet" href="{% static 'content/content.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+{#    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">#}
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
     <script src="{% static 'jq_3.6.0.js' %}"></script>
 </head>
@@ -26,8 +26,22 @@
                 {% include 'left_bar.html' %}
             {% endblock %}
             <div class="content-page">
-                {% block content_page %}
-                {% endblock %}
+                <div class="content-title">
+                    {% block content_title %}
+                    {% endblock %}
+                </div>
+                <div class="content-query">
+                    {% block content_query %}
+                    {% endblock %}
+                </div>
+                    <div class="content-detail">
+                        {% block content_detail %}
+                        {% endblock %}
+                    </div>
+                <div class="content-pagination">
+                    {% block pagination %}
+                    {% endblock %}
+                </div>
             </div>
         </div>
     </div>

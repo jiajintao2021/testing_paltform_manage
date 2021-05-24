@@ -1,0 +1,44 @@
+.content-page {
+    width: 100%;
+    height: 100%;
+    /*background: #6c757d;*/
+    margin: 1%;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+.content-page h1 {
+    margin: 0;
+    padding: 0;
+}
+
+.content-page div {
+    width: 100%;
+    margin: 1% 0;
+    box-sizing: border-box;
+    background: white;
+    border-radius: 13px;
+}
+
+.content-title, .content-query, .content-pagination, .content-detail {
+    display: flex;
+    padding: 0 2%;
+    height: 11%;
+    justify-content: start;
+    align-items: center;
+}
+
+.content-page .content-title {
+
+}
+
+.content-page .content-query {
+
+}
+
+.content-page .content-detail {
+    min-height: 50%;
+}
+
+.content-page .content-pagination {
+}

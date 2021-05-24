@@ -64,3 +64,17 @@ class CustomUsers(AbstractBaseUser):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
         return True
+
+
+class FilesModel(models.Model):
+    name = models.CharField('文件名称', max_length=32, null=False, unique=True)
+    file = models.FileField(upload_to='files')
+    desc = models.TextField('使用说明', max_length=255, null=False, default='')
+    is_delete = models.BooleanField('是否删除', default=False)
+
+    class Meta:
+        db_table = 'files'
+        ordering = ['-id']
+        permissions = ()
+        verbose_name = '文件管理'
+        verbose_name_plural = verbose_name

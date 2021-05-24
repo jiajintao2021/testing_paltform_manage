@@ -80,3 +80,4 @@ docker-compose-local.yml
 .qiniu_pythonsdk_hostscache.json
 # local
 venv/
+migrations/
