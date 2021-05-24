@@ -5,7 +5,7 @@
                 <i></i>
                 <p>个人中心</p>
             </a>
-            <div class="left-menu-2 close">
+            <div class="left-menu-2 {% if status_content == 'user_info' %}open{% else %}close{% endif %}">
                 <ul>
                     <li><a href="#"><p>消息中心</p></a></li>
                     <li><a href="#"><p>个人管理</p></a></li>
@@ -29,7 +29,7 @@
                 <i></i>
                 <p>测试工具</p>
             </a>
-            <div class="left-menu-2 close">
+            <div class="left-menu-2 {% if status_content == 'test_tools' %}open{% else %}close{% endif %}">
                 <ul>
                     <li><a href="{% url 'files-list' %}"><p>测试工具列表</p></a></li>
                 </ul>

@@ -1,5 +1,9 @@
 {% extends 'testing_platform/index.html' %}
 
+{% block left_bar %}
+    {% include 'left_bar.html' with status_content='test_tools' %}
+{% endblock %}
+
 {% block content_detail %}
     {{ file_list }}
 {% endblock %}
