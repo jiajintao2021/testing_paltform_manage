@@ -19,11 +19,7 @@
                         {% for error in form.non_field_errors %}
                             <p>{{ error }}</p>
                         {% endfor %}
-
-{#                        {{ form.non_field_errors }}#}
                     {% endif %}
-{#                    {{ form.name_or_field.errors }}#}
-{#                    <p>{{ form.name_of_field.errors }}</p>#}
                 </div>
                 <div class="form-content">
                     <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>

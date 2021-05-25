@@ -5,5 +5,33 @@
 {% endblock %}
 
 {% block content_detail %}
-    {{ file_list }}
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>文件名称</th>
+                    <th>文件</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in file_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ file.name }}</td>
+                        <td>
+                            <a href="{% url 'download-file' file.id %}">
+                                {{ file.name }}
+                            </a>
+                        </td>
+                        <td>删除</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    </script>
 {% endblock %}

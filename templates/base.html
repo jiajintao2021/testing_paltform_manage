@@ -26,21 +26,10 @@
                 {% include 'left_bar.html' %}
             {% endblock %}
             <div class="content-page">
-                <div class="content-title">
-                    {% block content_title %}
-                    {% endblock %}
-                </div>
-                <div class="content-query">
-                    {% block content_query %}
-                    {% endblock %}
-                </div>
-                    <div class="content-detail">
-                        {% block content_detail %}
-                        {% endblock %}
-                    </div>
-                <div class="content-pagination">
-                    {% block pagination %}
-                    {% endblock %}
+                <div class="content-detail">
+                    <div class="detail-header">{% block content_detail_header %}{% endblock %}</div>
+                    <div class="detail-content">{% block content_detail %}{% endblock %}</div>
+                    <div class="detail-bottom">{% block content_detail_bottom %}{% endblock %}</div>
                 </div>
             </div>
         </div>

@@ -8,6 +8,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 
 
+FILE_TYPE_CHOICES = (
+    (0, '未知'),
+    # 10 开头是文件
+    # 20 开头是压缩包
+    (201, 'ZIP压缩包', ),
+    (202, 'RAR压缩包', ),
+)
+
+
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **kwargs):
@@ -69,6 +78,7 @@ class CustomUsers(AbstractBaseUser):
 class FilesModel(models.Model):
     name = models.CharField('文件名称', max_length=32, null=False, unique=True)
     file = models.FileField(upload_to='files')
+    type = models.IntegerField('文件类型', choices=FILE_TYPE_CHOICES, null=False, default=0)
     desc = models.TextField('使用说明', max_length=255, null=False, default='')
     is_delete = models.BooleanField('是否删除', default=False)
 

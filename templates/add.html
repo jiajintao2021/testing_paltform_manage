@@ -1,0 +1,17 @@
+<div class="form-add">
+    <form action="{{ url }}" method="post">
+        <div class="form-errors">
+            {% if form.errors %}
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {% for field in form %}
+            <div>
+                {{ field.label_tag }}{{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" value="添加">
+    </form>
+</div>

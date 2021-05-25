@@ -32,10 +32,27 @@ html, body {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    padding: 0;
+}
+
+.header-bar p {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.header-bar ul {
+    padding: 1% 2%;
+    margin: 0;
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    flex-basis: 100%;
 }
 
 .header-bar li {
-    display: inline-block;
+    display: block;
+    padding: 0 2%;
 }
 
 /* 左侧导航栏以及中间的内容 */
@@ -52,4 +69,9 @@ html, body {
     width: 16%;
     height: 100%;
     background: #0c4128;
+}
+
+.left-menu a {
+    text-decoration: none;
+    color: white;
 }
