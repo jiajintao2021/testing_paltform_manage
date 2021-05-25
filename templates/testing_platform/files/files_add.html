@@ -6,5 +6,6 @@
 
 {% block content_detail %}
     {% url 'files-add' as add_url %}
-    {% include 'add.html' with form=form url=add_url %}
+    {% url 'files-list' as file_list %}
+    {% include 'add.html' with form=form url_add=add_url url_cancel=file_list %}
 {% endblock %}

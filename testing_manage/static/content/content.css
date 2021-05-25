@@ -8,6 +8,8 @@
     flex: 1;
 }
 
+/*列表*/
+
 .content-detail {
     height: 100%;
     background: white;
@@ -30,4 +32,62 @@
     text-align: start;
     padding: 1% 0;
     border-bottom-color: #E8E9E9;
+}
+
+/*form表单*/
+.form-field-input {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    flex-basis: 100%;
+    margin-top: 0.5%;
+    font-size: 14px;
+    color: #0C3C26;
+}
+
+.form-field-content {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.form-field-input input[type='checkbox'] {
+    height: 17px;
+    width: 17px;
+}
+
+.form-field-input input, .form-field-input select, .form-field-input textarea {
+    border: 1px solid #d5d5d5;
+    letter-spacing: 1px;
+    padding: 7px;
+    font-size: 14px;
+    color: #0C3C26;
+}
+
+.form-add form div label {
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 0.5%;
+}
+
+/*form表单按钮*/
+.form-button {
+    display: flex;
+    flex-direction: row-reverse;
+    /*margin-top: 1%;*/
+    width: 50%;
+}
+
+.form-button button, .form-button input[type='submit'] {
+    margin: 0 2%;
+    padding: 1% 5%;
+    border: 0;
+    color: white;
+}
+
+.form-content-submit {
+    background: #44B78B;
+}
+
+.form-content-cancel {
+    background: #5969ff;
 }

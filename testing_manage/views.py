@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 
 # Create your views here.
@@ -20,7 +21,7 @@ class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-class Index(TemplateView):
+class Index(LoginRequiredMixin , TemplateView):
     template_name = 'testing_platform/index.html'
 
 
@@ -34,14 +35,14 @@ class DownFile(View):
         return response
 
 
-class FilesListView(ListView):
+class FilesListView(LoginRequiredMixin, ListView):
     template_name = 'testing_platform/files/files_list.html'
     model = FilesModel
     queryset = FilesModel.objects.filter(is_delete=False)
     context_object_name = 'file_list'
 
 
-class FilesAddView(CreateView):
+class FilesAddView(LoginRequiredMixin,CreateView):
     form_class = FilesAddForm
     model = FilesModel
     template_name = 'testing_platform/files/files_add.html'
