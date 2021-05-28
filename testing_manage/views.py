@@ -21,7 +21,7 @@ class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
 
 
-class Index(LoginRequiredMixin , TemplateView):
+class Index(LoginRequiredMixin, TemplateView):
     template_name = 'testing_platform/index.html'
 
 
@@ -42,7 +42,7 @@ class FilesListView(LoginRequiredMixin, ListView):
     context_object_name = 'file_list'
 
 
-class FilesAddView(LoginRequiredMixin,CreateView):
+class FilesAddView(LoginRequiredMixin, CreateView):
     form_class = FilesAddForm
     model = FilesModel
     template_name = 'testing_platform/files/files_add.html'

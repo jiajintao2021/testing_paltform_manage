@@ -88,3 +88,14 @@ class FilesModel(models.Model):
         permissions = ()
         verbose_name = '文件管理'
         verbose_name_plural = verbose_name
+
+
+class TypeInfoModel(models.Model):
+    type_name = models.CharField('类型名称', max_length=16, unique=True)
+    is_delete = models.BooleanField('是否删除', default=False)
+
+    class Meta:
+        db_table = 'type_info'
+        verbose_name = '类型名称'
+        verbose_name_plural = verbose_name
+        permissions = ()

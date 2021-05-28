@@ -14,16 +14,22 @@ REPORT_STATUS_CHOICE = {
     (2, '已统计'),
 }
 
+TIME_TYPE_CHOICE = (
+    (1, '近24小时'),
+    (2, '近30天'),
+    (3, '近1年'),
+)
+
 
 class AbsReportModel(models.Model):
     user_id = models.IntegerField(
         '用户id', null=False, blank=False, default=0, help_text='默认0， admin代表未知')
-    is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
-    status = models.IntegerField(
-        '状态', choices=REPORT_STATUS_CHOICE, default=0, help_text='统计状态')
     code = models.CharField('保留字段', max_length=32, null=False, default='', help_text='保留字段')
-    type = models.IntegerField('报告类型', choices=REPORT_TYPE_CHOICE, default=0)
+    type_id = models.IntegerField('测试类型', default=0)
+    # type = models.IntegerField('报告类型', choices=REPORT_TYPE_CHOICE, default=0)
     create_time = models.DateTimeField('创建时间', default=timezone.now, help_text='落库时间，不是统计时间')
+    start_time = models.DateTimeField(
+        '开始时间', default=timezone.now, help_text='测试脚本开始执行时间，该时间作为统计时间')
 
     fatal_exception = models.IntegerField('FATAL EXCEPTION', null=False, blank=False, default=0)
     tombstone = models.IntegerField('Tombstone', null=False, blank=False, default=0)
@@ -78,6 +84,11 @@ class AbsReportModel(models.Model):
 
 
 class LatestReportModel(AbsReportModel):
+    is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
+    status = models.IntegerField(
+        '状态', choices=REPORT_STATUS_CHOICE, default=0, help_text='统计状态')
+    time_type = models.IntegerField('时间类型', choices=TIME_TYPE_CHOICE, default=1)
+
     class Meta:
         db_table = 'latest_report'
         permissions = ()
@@ -107,6 +118,9 @@ class MonthReportModel(AbsReportModel):
 
 
 class DayReportModel(AbsReportModel):
+    is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
+    status = models.IntegerField(
+        '状态', choices=REPORT_STATUS_CHOICE, default=0, help_text='统计状态')
 
     class Meta:
         db_table = 'day_report'
