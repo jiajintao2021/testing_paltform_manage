@@ -83,6 +83,20 @@ class AbsReportModel(models.Model):
         abstract = True
 
 
+class ReportOriginModel(AbsReportModel):
+    is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
+    status = models.IntegerField(
+        '状态', choices=REPORT_STATUS_CHOICE, default=0, help_text='统计状态')
+    time_type = models.IntegerField('时间类型', choices=TIME_TYPE_CHOICE, default=1)
+
+    class Meta:
+        db_table = 'origin_report'
+        permissions = ()
+        ordering = ['-start_time']
+        verbose_name = '原始报告'
+        verbose_name_plural = verbose_name
+
+
 class LatestReportModel(AbsReportModel):
     is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
     status = models.IntegerField(
@@ -97,13 +111,16 @@ class LatestReportModel(AbsReportModel):
         verbose_name_plural = verbose_name
 
 
-class YearReportModel(AbsReportModel):
+class DayReportModel(AbsReportModel):
+    is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
+    status = models.IntegerField(
+        '状态', choices=REPORT_STATUS_CHOICE, default=0, help_text='统计状态')
 
     class Meta:
-        db_table = 'year_report'
+        db_table = 'day_report'
         permissions = ()
         ordering = ['-create_time']
-        verbose_name = '年报告'
+        verbose_name = '日报告'
         verbose_name_plural = verbose_name
 
 
@@ -117,14 +134,11 @@ class MonthReportModel(AbsReportModel):
         verbose_name_plural = verbose_name
 
 
-class DayReportModel(AbsReportModel):
-    is_active = models.BooleanField('是否有效', default=True, help_text='是否有效')
-    status = models.IntegerField(
-        '状态', choices=REPORT_STATUS_CHOICE, default=0, help_text='统计状态')
+class YearReportModel(AbsReportModel):
 
     class Meta:
-        db_table = 'day_report'
+        db_table = 'year_report'
         permissions = ()
         ordering = ['-create_time']
-        verbose_name = '日报告'
+        verbose_name = '年报告'
         verbose_name_plural = verbose_name
