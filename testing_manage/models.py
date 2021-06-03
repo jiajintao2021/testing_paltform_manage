@@ -16,6 +16,11 @@ FILE_TYPE_CHOICES = (
     (202, 'RAR压缩包', ),
 )
 
+TYPE_INFO_CHOICES = (
+    (0, '未知'),
+    (1, 'Monkey'),
+)
+
 
 class CustomUserManager(BaseUserManager):
 
@@ -92,6 +97,7 @@ class FilesModel(models.Model):
 
 class TypeInfoModel(models.Model):
     type_name = models.CharField('类型名称', max_length=16, unique=True)
+    code_number = models.IntegerField('数字编号', choices=TYPE_INFO_CHOICES, null=False, default=0)
     is_delete = models.BooleanField('是否删除', default=False)
 
     class Meta:

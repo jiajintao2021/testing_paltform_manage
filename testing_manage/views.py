@@ -20,6 +20,15 @@ class CustomLoginView(LoginView):
     form_class = forms.LoginForm
     template_name = 'registration/login.html'
 
+    def post(self, request, *args, **kwargs):
+        return super(CustomLoginView, self).post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        return super(CustomLoginView, self).form_valid(form)
+
+    def get_form(self, form_class=None):
+        return super(CustomLoginView, self).get_form(form_class)
+
 
 class Index(LoginRequiredMixin, TemplateView):
     template_name = 'testing_platform/index.html'
