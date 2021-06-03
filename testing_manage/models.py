@@ -95,13 +95,13 @@ class FilesModel(models.Model):
         verbose_name_plural = verbose_name
 
 
-class TypeInfoModel(models.Model):
-    type_name = models.CharField('类型名称', max_length=16, unique=True)
-    code_number = models.IntegerField('数字编号', choices=TYPE_INFO_CHOICES, null=False, default=0)
-    is_delete = models.BooleanField('是否删除', default=False)
-
-    class Meta:
-        db_table = 'type_info'
-        verbose_name = '类型名称'
-        verbose_name_plural = verbose_name
-        permissions = ()
+# class TypeInfoModel(models.Model):
+#     type_name = models.CharField('类型名称', max_length=16, unique=True)
+#     code_number = models.IntegerField('数字编号', choices=TYPE_INFO_CHOICES, null=False, default=0)
+#     is_delete = models.BooleanField('是否删除', default=False)
+#
+#     class Meta:
+#         db_table = 'type_info'
+#         verbose_name = '类型名称'
+#         verbose_name_plural = verbose_name
+#         permissions = ()
