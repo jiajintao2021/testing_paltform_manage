@@ -21,4 +21,5 @@ from testing_manage import urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('testing/', include(urls)),
+    path('', include(urls)),
 ]

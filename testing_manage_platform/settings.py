@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -30,10 +29,15 @@ ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'testing_manage.CustomUsers'
 
 LOGIN_URL = '/testing/login/'
-LOGIN_REDIRECT_URL = '/testing/index/'
+LOGIN_REDIRECT_URL = '/testing/'
 
+SAVE_FILE_PATH = os.getenv('SAVE_FILE_PATH', 'D:\DJANGO_FILE')
 
-SAVE_FILE_PATH = os.getenv('SAVE_FILE_PATH')
+LDAP_HOST = os.getenv('LDAP_HOST', '192.168.200.100')
+LDAP_PORT = os.getenv('LDAP_PORT', 389)
+LDAP_ADDRESS = '192.168.100.200:389'
+
+AUTHENTICATION_BACKENDS = ['testing_manage.backend.CustomBackend']
 
 MEDIA_URL = os.path.abspath(SAVE_FILE_PATH) + '/'
 MEDIA_ROOT = SAVE_FILE_PATH
@@ -60,6 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # 'testing_manage.middleware.CustomMiddleware',
 ]
 
 ROOT_URLCONF = 'testing_manage_platform.urls'
@@ -83,7 +89,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'testing_manage_platform.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -97,7 +102,6 @@ DATABASES = {
         'PORT': 3306,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -117,7 +121,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -130,7 +133,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
