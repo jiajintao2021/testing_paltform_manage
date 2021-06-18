@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import UsernameField
 
@@ -5,7 +7,9 @@ from django.contrib.auth.views import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from report_manage.models import CarInfoModel, ReportTotalModel
 from testing_manage.models import FilesModel
+from testing_manage.utils import now_date, now_date_30
 
 
 class LoginForm(AuthenticationForm):
@@ -45,3 +49,32 @@ class FilesAddForm(forms.ModelForm):
         if FilesModel.objects.filter(name=name):
             raise ValidationError('该名称已经存在！')
         return name
+
+
+class MonkeyReportForm(forms.Form):
+    # test_version =
+    start_time = forms.DateField(label='开始时间', required=False, initial=now_date_30)
+    end_time = forms.DateTimeField(label='结束时间', required=False, initial=now_date)
+    car_codes = forms.CharField(
+        label='汽车类型', required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox'}))
+
+    class Meta:
+        model = ReportTotalModel
+        fields = '__all__'
+
+    def clean_car_codes(self):
+        car_codes = self.cleaned_data.get('car_codes')
+        print(car_codes)
+        return car_codes
+
+    def clean_end_time(self):
+        date = self.cleaned_data.get('end_time')
+        if not date:
+            date = now_date()
+        return date
+
+    def clean_start_time(self):
+        date = self.cleaned_data.get('start_time')
+        if not date:
+            date = now_date_30()
+        return date

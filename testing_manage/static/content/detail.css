@@ -1,0 +1,36 @@
+.content-ul-flex {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: start;
+    list-style: none;
+}
+
+.content-ul-li {
+    padding-right: 1rem;
+}
+
+.content-header {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 1rem;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 1rem;
+}
+
+.detail-content {
+    margin: 2% 0;
+}
+
+.detail-content .report-form {
+    padding-bottom: 2rem;
+}
+
+.detail-header-query {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}

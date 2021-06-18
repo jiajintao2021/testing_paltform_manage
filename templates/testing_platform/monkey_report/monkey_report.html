@@ -1,0 +1,90 @@
+{% extends 'testing_platform/index.html' %}
+{% load widget_tweaks %}
+
+{% block left_bar %}
+    {% include 'left_bar.html' with status_content='monkey_report' %}
+{% endblock %}
+
+{% block content_detail_header %}
+    <div class="content-header">
+        <div class="detail-header-nav">
+            <ul class="content-ul-flex">
+                <li class="content-ul-li"><a href="#"><p>统计1</p></a></li>
+                <li class="content-ul-li"><a href="#"><p>统计2</p></a></li>
+                <li class="content-ul-li"><a href="#"><p>统计3</p></a></li>
+                <li class="content-ul-li"><a href="#"><p>统计4</p></a></li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_detail %}
+    <form class="report-form" action="{% url 'monkey-report' %}" method="GET">
+        <div class="detail-header-query">
+            <div>
+                {{ object.start_time.label_tag }}
+                {% render_field object.start_time type='date' value=object.start_time.initial %}
+            </div>
+            <div>
+                {{ object.end_time.label_tag }}
+                {% render_field object.end_time type='date' value=object.end_time.initial %}
+            </div>
+            <div>
+                {{ object.car_codes }}
+{#                {% render_field object.car_codes.label_tag %}#}
+{#                {% for car in car_info %}#}
+{#                    #}
+{#                    {% render_field object.car_codes type='checkbox' %}#}
+{#                    <p>{{ car.code }}|{{ car.name }}|{{ car.alias }}</p>#}
+{#                {% endfor %}#}
+            </div>
+        </div>
+        <div>
+            <input type="submit" value="查询">
+        </div>
+    </form>
+
+    <div class="report" id="monkey-report">
+        <div class="report-col-stacked-chart" id="col-stacked-chart"></div>
+    </div>
+    <script type="text/javascript">
+        var chart = echarts.init(document.getElementById('col-stacked-chart'))
+        var option = {
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    legend: {
+        data: ['邮件营销', '联盟广告']
+    },
+    grid: {
+        left: '5%',
+        right: '5%',
+        bottom: '3%',
+        {#top: '5%',#}
+        containLabel: true},
+    xAxis: [{
+            type: 'category',
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']}],
+    yAxis: [{type: 'value'}],
+    series: [
+        {name: '邮件营销',
+            type: 'bar',
+            stack: '广告',
+            emphasis: {
+                focus: 'series'
+            },
+            data: [120, 132, 101, 134, 90, 230, 210]},
+        {name: '联盟广告',
+            type: 'bar',
+            stack: '广告',
+            emphasis: {
+                focus: 'series'
+            },
+            data: [220, 182, 191, 234, 290, 330, 310]}]}
+
+        chart.setOption(option)
+    </script>
+{% endblock %}

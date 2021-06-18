@@ -48,9 +48,9 @@
                 <i></i>
                 <p>测试报告</p>
             </a>
-            <div class="left-menu-2 close">
+            <div class="left-menu-2 {% if status_content == 'monkey_report' %}open{% else %}close{% endif %}">
                 <ul>
-                    <li><a href="#"><p>Monkey</p></a></li>
+                    <li><a href="{% url 'monkey-report' %}"><p>Monkey</p></a></li>
                     <li><a href="#"><p>稳定性测试</p></a></li>
                     <li><a href="#"><p>自动化测试</p></a></li>
                 </ul>

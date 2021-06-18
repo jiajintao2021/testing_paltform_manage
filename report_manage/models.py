@@ -1,7 +1,10 @@
 from django.db import models
 
 # Create your models here.
+from django.db.models import DO_NOTHING
 from django.utils import timezone
+
+from testing_manage.models import CustomUsers
 
 REPORT_STATUS = (
     (0, '未知'),
@@ -65,11 +68,35 @@ class AbsReportErrorModel(models.Model):
     class Meta:
         abstract = True
 
+    def to_dict(self):
+        return {
+            'fatal_exception': self.fatal_exception,
+            'tombstone': self.tombstone,
+            'vm_exitin': self.vm_exitin,
+            'shutting_down_vm': self.shutting_down_vm,
+            'activity_pause_timeout': self.fatal_exception,
+            'app_not_response': self.fatal_exception,
+            'null_pointer_exception': self.fatal_exception,
+            'illegal_state_exception': self.fatal_exception,
+            'format_exception': self.fatal_exception,
+            'not_found_exception': self.fatal_exception,
+            'init_before_start_services': self.fatal_exception,
+            'out_of_memory': self.fatal_exception,
+            'anr_in': self.fatal_exception,
+            'exit_zygote': self.fatal_exception,
+            'sv_gpio_probe_start': self.fatal_exception,
+            'kernel_panic': self.fatal_exception,
+            'kernel_bug': self.fatal_exception,
+            'causing_watchdog_bite': self.fatal_exception,
+            'waring': self.fatal_exception,
+        }
+
 
 class CarInfoModel(models.Model):
     name = models.CharField('汽车名称', max_length=32, unique=True, null=False, blank=False, default='')
     code = models.CharField('汽车类型编码', max_length=16, unique=True, blank=False, null=False, default='')
     alias = models.CharField('汽车别名', max_length=32, unique=True, blank=True, null=True, default='')
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'car_info'
@@ -81,6 +108,7 @@ class DevicePositionModel(models.Model):
     name = models.CharField('位置名称', max_length=32, unique=True, null=False, blank=False, default='')
     code = models.CharField('位置编码', max_length=16, unique=True, blank=False, null=False, default='')
     alias = models.CharField('位置别名', max_length=32, unique=True, blank=True, null=True, default='')
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'device_position'
@@ -92,6 +120,7 @@ class ModeInfoModel(models.Model):
     mode = models.CharField('编译方式', max_length=16, unique=True, null=False, blank=False, default='')
     code = models.CharField('编译方式编码', max_length=16, unique=True, blank=False, null=False, default='')
     alias = models.CharField('编译方式别名', max_length=32, unique=True, blank=True, null=True, default='')
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'mode_info'
@@ -103,6 +132,7 @@ class TestTypeInfo(models.Model):
     type = models.CharField('测试类型', max_length=32, unique=True, null=False, blank=False, default='')
     code = models.CharField('测试类型编码', max_length=16, unique=True, blank=False, null=False, default='')
     alias = models.CharField('测试类型别名', max_length=32, unique=True, blank=True, null=True, default='')
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'test_type_info'
@@ -116,10 +146,14 @@ class TestVersionModel(models.Model):
     """
     version = models.CharField('测试版本编号', max_length=255, null=False, blank=False, default='')
     code = models.CharField('唯一编号', max_length=128, unique=True, null=False, blank=False, default='')
-    position_id = models.IntegerField('设备类型', null=False, blank=False, default=0)
-    car_id = models.IntegerField('汽车类型', null=False, blank=False, default=0)
-    mode_id = models.IntegerField('编译模式', null=False, blank=False, default=0)
+    position = models.ForeignKey(DevicePositionModel, on_delete=DO_NOTHING, default=0)
+    # position_id = models.IntegerField('设备类型', null=False, blank=False, default=0)
+    car = models.ForeignKey(CarInfoModel, on_delete=DO_NOTHING, default=0)
+    # car_id = models.IntegerField('汽车类型', null=False, blank=False, default=0)
+    mode = models.ForeignKey(ModeInfoModel, on_delete=DO_NOTHING, default=0)
+    # mode_id = models.IntegerField('编译模式', null=False, blank=False, default=0)
     date = models.DateTimeField('日期', null=True)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'test_version'
@@ -128,21 +162,27 @@ class TestVersionModel(models.Model):
 
 
 class ReportOriginModel(models.Model):
-    user_id = models.IntegerField('用户ID', null=False, blank=False, default=0)
-    test_version_id = models.IntegerField('测试版本ID', null=False, blank=False, default=0)
-    test_type_id = models.IntegerField('测试类型ID', null=False, blank=False, default=0)
+    user = models.ForeignKey(CustomUsers, on_delete=DO_NOTHING, default=0)
+    # user_id = models.IntegerField('用户ID', null=False, blank=False, default=0)
+    test_version = models.ForeignKey(TestVersionModel, on_delete=DO_NOTHING, default=0)
+    # test_version_id = models.IntegerField('测试版本ID', null=False, blank=False, default=0)
+    test_type = models.ForeignKey(TestTypeInfo, on_delete=DO_NOTHING, default=0)
+    # test_type_id = models.IntegerField('测试类型ID', null=False, blank=False, default=0)
     device = models.CharField('设备编号', max_length=128, null=False, blank=False, default='')
     test_start_time = models.DateTimeField('测试开始时间')
     test_end_time = models.DateTimeField('测试结束时间')
     report_status = models.IntegerField('统计状态', choices=REPORT_STATUS, default=0)
     create_time = models.DateTimeField('记录创建时间', default=timezone.now)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'report_origin'
 
 
 class ReportErrorOriginModel(AbsReportErrorModel):
-    report_origin_id = models.IntegerField('reportOriginID', null=False, blank=False, default=0)
+    report_origin = models.ForeignKey(ReportOriginModel, on_delete=DO_NOTHING)
+    # report_origin_id = models.IntegerField('reportOriginID', null=False, blank=False, default=0)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'report_error_origin'
@@ -150,21 +190,26 @@ class ReportErrorOriginModel(AbsReportErrorModel):
         permissions = ()
 
 
-class ReportErrorTotalModel(AbsReportErrorModel):
-    report_total_id = models.IntegerField('reportDayID', null=False, blank=False, default=0)
+class ReportTotalModel(models.Model):
+    test_version = models.ForeignKey(TestVersionModel, on_delete=DO_NOTHING, default=0)
+    test_type = models.ForeignKey(TestTypeInfo, on_delete=DO_NOTHING, default=0)
+    # test_version_id = models.IntegerField('测试版本ID', null=False, blank=False, default=0)
+    # test_type_id = models.IntegerField('测试类型ID', null=False, blank=False, default=0)
+    create_time = models.DateTimeField('记录创建时间', default=timezone.now)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
-        db_table = 'report_error_total'
+        db_table = 'report_total'
         ordering = ['-id']
         permissions = ()
 
 
-class ReportTotalModel(models.Model):
-    test_version_id = models.IntegerField('测试版本ID', null=False, blank=False, default=0)
-    test_type_id = models.IntegerField('测试类型ID', null=False, blank=False, default=0)
-    create_time = models.DateTimeField('记录创建时间', default=timezone.now)
+class ReportErrorTotalModel(AbsReportErrorModel):
+    report_total = models.ForeignKey(ReportTotalModel, on_delete=DO_NOTHING, default=0)
+    # report_total_id = models.IntegerField('reportDayID', null=False, blank=False, default=0)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
-        db_table = 'report_total'
+        db_table = 'report_error_total'
         ordering = ['-id']
         permissions = ()

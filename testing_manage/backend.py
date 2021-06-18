@@ -2,7 +2,7 @@
 @TIME: 2021/6/3 18:21
 @AUTHOR: JiaJinTao
 """
-
+from django.contrib.auth import authenticate
 from django.contrib.auth.backends import BaseBackend
 from ldap3 import Server, Connection
 from ldap3.core.exceptions import LDAPBindError
@@ -16,6 +16,18 @@ class CustomBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         if username is None or password is None:
             return
+
+        if request.path == '/admin/login/':
+            if '@' not in username:
+                return
+            try:
+                user = CustomUsers.objects.get(email=username)
+            except CustomUsers.DoesNotExist:
+                return None
+            if user.check_password(password) and user.is_active and user.is_staff:
+                return user
+            return
+
         email = username
         if '@' not in email:
             email = username + '@enovatemotors.com'

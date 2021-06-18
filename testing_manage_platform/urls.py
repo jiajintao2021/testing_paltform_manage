@@ -17,9 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 from testing_manage import urls
+# from report_manage import urls as report_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('testing/', include(urls)),
+    # path('testing/', include(report_urls)),
     path('', include(urls)),
 ]

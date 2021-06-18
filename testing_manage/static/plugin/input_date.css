@@ -1,0 +1,8 @@
+.plugin-date {
+    display: flex;
+}
+
+.plugin-date-start, .plugin-date-end {
+    display: flex;
+    padding-right: 7px;
+}

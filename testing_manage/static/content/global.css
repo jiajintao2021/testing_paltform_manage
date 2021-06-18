@@ -3,8 +3,8 @@ html, body {
     padding: 0;
     border: 0;
     width: 100%;
-    height: 100%;
     background: #F6F8FA;
+    height: 100%;
 }
 
 .close {
@@ -17,22 +17,18 @@ html, body {
 /* 整个页面 */
 .page {
     display: flex;
-    height: 100%;
     flex-direction: column;
-    justify-content: start;
-    -webkit-flex-basis: 100%;
-    flex: 1;
-    overflow: hidden;
+    min-height: 100%;
 }
 /* 头导航栏 */
 .header-bar {
     width: 100%;
-    min-height: 6%;
     background: #0dcaf0;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
     padding: 0;
+    z-index: 2;
 }
 
 .header-bar p {
@@ -59,20 +55,25 @@ html, body {
 /* 左侧导航栏以及中间的内容 */
 .row-two {
     width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: start;
     background: #ebeeef;
+
+    flex: 1;
 }
 
 .row-two .left-menu {
     width: 16%;
-    height: 100%;
     background: #0c4128;
 }
 
 .left-menu a {
     text-decoration: none;
     color: white;
+}
+
+.flex-start {
+    display: flex;
+    justify-content: start;
 }
