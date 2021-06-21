@@ -7,7 +7,7 @@ from django.contrib.auth.views import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from report_manage.models import CarInfoModel, ReportTotalModel
+from report_manage.models import CarInfoModel, ReportTotalModel, TestVersionModel, ModeInfoModel, DevicePositionModel
 from testing_manage.models import FilesModel
 from testing_manage.utils import now_date, now_date_30
 
@@ -51,12 +51,48 @@ class FilesAddForm(forms.ModelForm):
         return name
 
 
+class MonkeyReportME5Form(forms.Form):
+    start_time = forms.DateField(label='时间范围', required=False, initial=now_date_30)
+    end_time = forms.DateTimeField(label='结束时间', required=False, initial=now_date)
+    test_versions = forms.ModelMultipleChoiceField(
+        label='测试版本号',
+        queryset=None,
+        required=False,
+        widget=forms.CheckboxSelectMultiple)
+    position = forms.ModelMultipleChoiceField(
+        label='设备位置',
+        queryset=DevicePositionModel.objects.filter(is_delete=False, cardevicepositionmodel__car__name='ME5'),
+        widget=forms.CheckboxSelectMultiple)
+    mode_codes = forms.ModelMultipleChoiceField(
+        label='编译模式',
+        queryset=ModeInfoModel.objects.filter(is_delete=False),
+        widget=forms.CheckboxSelectMultiple)
+
+    def __init__(self, test_versions_queryset=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['test_versions'].queryset = test_versions_queryset
+
+
 class MonkeyReportForm(forms.Form):
     # test_version =
-    start_time = forms.DateField(label='开始时间', required=False, initial=now_date_30)
+    start_time = forms.DateField(label='时间范围', required=False, initial=now_date_30)
     end_time = forms.DateTimeField(label='结束时间', required=False, initial=now_date)
-    car_codes = forms.CharField(
-        label='汽车类型', required=False, widget=forms.CheckboxInput(attrs={'type': 'checkbox'}))
+    # car_codes = forms.ModelChoiceField(
+    #     queryset=CarInfoModel.objects.filter(is_delete=False),
+    #     label='汽车名称',
+    #     widget=forms.RadioSelect)
+    test_versions = forms.ModelMultipleChoiceField(
+        label='测试版本号',
+        queryset=TestVersionModel.objects.filter(is_delete=False),
+        widget=forms.CheckboxSelectMultiple)
+    mode_codes = forms.ModelMultipleChoiceField(
+        label='编译模式',
+        queryset=ModeInfoModel.objects.filter(is_delete=False),
+        widget=forms.CheckboxSelectMultiple)
+    position = forms.ModelMultipleChoiceField(
+        label='设备位置',
+        queryset=DevicePositionModel.objects.filter(is_delete=False),
+        widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = ReportTotalModel
@@ -64,7 +100,6 @@ class MonkeyReportForm(forms.Form):
 
     def clean_car_codes(self):
         car_codes = self.cleaned_data.get('car_codes')
-        print(car_codes)
         return car_codes
 
     def clean_end_time(self):

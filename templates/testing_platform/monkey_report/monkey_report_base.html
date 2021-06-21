@@ -1,0 +1,112 @@
+{% extends 'testing_platform/index.html' %}
+{% load widget_tweaks %}
+
+{% block left_bar %}
+    {% include 'left_bar.html' with status_content='monkey_report' %}
+{% endblock %}
+
+{% block content_detail_header %}
+    <div class="content-header">
+        <div class="detail-header-nav">
+            <ul class="content-ul-flex nav nav-pills">
+                <li class="content-ul-li nav-item">
+                    <a class="nav-link active" href="{% url 'monkey-report-me5' %}">
+                        <p>ME5</p>
+                    </a>
+                </li>
+                <li class="content-ul-li nav-item">
+                    <a class="nav-link" href="{% url 'monkey-report-me5' %}">
+                        <p>ME7</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_detail %}
+    <form class="report-form" action="{% url 'monkey-report-me5' %}" method="GET">
+        <div class="detail-header-query">
+            <div class="content-ul-flex">
+                {% render_field object.start_time|add_label_class:'font-wide-title block' %}
+                {% render_field object.start_time|attr:'type:date' value=object.start_time.initial %}
+                {% render_field object.end_time type='date' value=object.end_time.initial %}
+            </div>
+{#            <div class="content-ul-flex">#}
+{#                {% render_field object.car_codes|add_label_class:'font-wide-title block' %}#}
+{#                {% render_field object.car_codes %}#}
+{#            </div>#}
+            <div class="content-ul-flex">
+                {% render_field object.test_versions|add_label_class:'font-wide-title block' %}
+                {% render_field object.test_versions|add_class:'checkbox-all from-check-input' %}
+                <div class="button-group-1">
+                    <button class="button-font checkbox-all-b-i">全选</button>
+                    <button class="button-font checkbox-all-b-o">清除</button>
+                </div>
+            </div>
+            <div class="content-ul-flex">
+                {% render_field object.mode_codes|add_label_class:'font-wide-title block' %}
+                {% render_field object.mode_codes %}
+            </div>
+            <div class="content-ul-flex">
+                {% render_field object.position|add_label_class:'font-wide-title block' %}
+                {% render_field object.position %}
+            </div>
+        </div>
+        <div>
+            <input type="submit" value="查询" class="btn btn-primary btn-sm">
+        </div>
+    </form>
+
+    <div class="report" id="monkey-report">
+        <div class="report-col-stacked-chart" id="col-stacked-chart"></div>
+    </div>
+    <script type="text/javascript">
+        var chart = echarts.init(document.getElementById('col-stacked-chart'))
+        var option = {
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+    },
+    legend: {
+        data: ['邮件营销', '联盟广告']
+    },
+    grid: {
+        left: '5%',
+        right: '5%',
+        bottom: '3%',
+        {#top: '5%',#}
+        containLabel: true},
+    xAxis: [{
+            type: 'category',
+            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']}],
+    yAxis: [{type: 'value'}],
+    series: [
+        {name: '邮件营销',
+            type: 'bar',
+            stack: '广告',
+            emphasis: {
+                focus: 'series'
+            },
+            data: [120, 132, 101, 134, 90, 230, 210]},
+        {name: '联盟广告',
+            type: 'bar',
+            stack: '广告',
+            emphasis: {
+                focus: 'series'
+            },
+            data: [220, 182, 191, 234, 290, 330, 310]}]}
+
+        chart.setOption(option)
+    </script>
+    <script>
+        $('.checkbox-all-b-i').click(function (){
+            $('.checkbox-all input[type=checkbox]').attr('checked', true);
+        });
+        $('.checkbox-all-b-o').click(function (){
+            $('.checkbox-all input[type=checkbox]').removeAttr('checked');
+        });
+    </script>
+{% endblock %}

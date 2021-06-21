@@ -1,4 +1,5 @@
 {% load static %}
+{% load widget_tweaks %}
 
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -6,13 +7,15 @@
     <meta charset="UTF-8">
 
     <title>Testing</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
+
     <link rel="stylesheet" href="{% static 'content/global.css' %}">
     <link rel="stylesheet" href="{% static 'content/content.css' %}">
     <link rel="stylesheet" href="{% static 'content/echarts_css.css' %}">
     <link rel="stylesheet" href="{% static 'content/detail.css' %}">
     <link rel="stylesheet" href="{% static 'plugin/input_date.css' %}">
-    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.css' %}">
-{#    <link rel="stylesheet" href="{% static 'echarts/echarts.js' %}">#}
+    <link rel="stylesheet" href="{% static 'content/button.css' %}">
+    <link rel="stylesheet" href="{% static 'content/custom_bootstrap.css' %}">
     <script src="{% static 'echarts/echarts.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
     <script src="{% static 'jq_3.6.0.js' %}"></script>

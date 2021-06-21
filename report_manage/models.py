@@ -103,6 +103,9 @@ class CarInfoModel(models.Model):
         permissions = ()
         ordering = ['-id']
 
+    def __str__(self):
+        return self.name
+
 
 class DevicePositionModel(models.Model):
     name = models.CharField('位置名称', max_length=32, unique=True, null=False, blank=False, default='')
@@ -115,6 +118,19 @@ class DevicePositionModel(models.Model):
         permissions = ()
         ordering = ['-id']
 
+    def __str__(self):
+        return self.name
+
+
+class CarDevicePositionModel(models.Model):
+    position = models.ForeignKey(DevicePositionModel, on_delete=DO_NOTHING, null=False, blank=False, default=0)
+    car = models.ForeignKey(CarInfoModel, on_delete=DO_NOTHING, null=False, blank=False, default=0)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
+
+    class Meta:
+        db_table = 'car_device_position'
+        permissions = ()
+
 
 class ModeInfoModel(models.Model):
     mode = models.CharField('编译方式', max_length=16, unique=True, null=False, blank=False, default='')
@@ -126,6 +142,9 @@ class ModeInfoModel(models.Model):
         db_table = 'mode_info'
         permissions = ()
         ordering = ['-id']
+
+    def __str__(self):
+        return self.mode
 
 
 class TestTypeInfo(models.Model):
@@ -159,6 +178,9 @@ class TestVersionModel(models.Model):
         db_table = 'test_version'
         permissions = ()
         ordering = ['-id']
+
+    def __str__(self):
+        return self.code
 
 
 class ReportOriginModel(models.Model):
