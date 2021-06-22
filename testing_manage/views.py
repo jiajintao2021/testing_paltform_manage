@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -16,7 +17,7 @@ from django.views.static import FileResponse
 from report_manage.models import ReportTotalModel, TestTypeInfo, ReportErrorTotalModel, TestVersionModel, CarInfoModel, \
     CarDevicePositionModel, ModeInfoModel, DevicePositionModel
 from testing_manage import forms
-from testing_manage.forms import FilesAddForm, MonkeyReportForm, MonkeyReportME5Form
+from testing_manage.forms import FilesAddForm, QueryTestVersionForm, ReportTestVersionsForm
 from testing_manage.models import FilesModel
 from testing_manage.utils import now_date_30, now_date
 
@@ -55,81 +56,53 @@ class FilesAddView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('files-list')
 
 
-class MonkeyReportME5View(LoginRequiredMixin, SingleObjectMixin, TemplateView):
+class MonkeyReportView(LoginRequiredMixin, SingleObjectMixin, TemplateView):
     template_name = 'testing_platform/monkey_report/monkey_report.html'
 
+    def get(self, request, *args, **kwargs):
+        car_name = kwargs.get('car_name')
+
+        get_data = request.GET.copy()
+        get_data.setlistdefault(
+            'position', DevicePositionModel.objects.filter(cardevicepositionmodel__car__name=car_name))
+        get_data.setlistdefault('mode_codes', ModeInfoModel.objects.filter(is_delete=False))
+        get_data.setdefault('end_time', now_date())
+        get_data.setdefault('start_time', now_date_30())
+
+        self.test_version_query_object = QueryTestVersionForm(car_name=car_name, data=get_data,)
+        self.test_version_query_object.is_valid()
+        # 在统计的时候不需要查询test version
+        if 'test_versions' not in get_data:
+            test_versions = TestVersionModel.objects.filter(
+                date__gte=get_data.get('start_time'), date__lt=get_data.get('end_time'),
+                position_id__in=get_data.getlist('position'), mode_id__in=get_data.getlist('mode_codes'))
+        else:
+            test_versions = get_data.getlist('test_versions')
+            test_versions = TestVersionModel.objects.filter(id__in=test_versions)
+        self.test_version_object = ReportTestVersionsForm(
+            test_version_queryset=test_versions, data={'test_versions': test_versions})
+        self.test_version_object.is_valid()
+        return super(MonkeyReportView, self).get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
-        test_type_info = TestTypeInfo.objects.filter(code='monkey').first()
+        """
+        根据测试版本号的个数，判断展示的类型
+        """
         context = super(SingleObjectMixin, self).get_context_data(**kwargs)
-        context['monkey_report_1'] = ReportTotalModel.objects.filter(test_type_id=test_type_info.id)
-        context['object'] = self.object
+        context['test_version_query_object'] = self.test_version_query_object
+        context['test_version_object'] = self.test_version_object
+        test_versions = self.test_version_object.data.get('test_versions')
+        context['report_total_1'] = self.report_1(
+            ReportErrorTotalModel.objects.filter(report_total__test_version__in=test_versions))
         return context
 
-    def get(self, request, *args, **kwargs):
-        content = {}
-        car_name = 'ME5'
-        print(request.GET, kwargs)
-        position = request.GET.get('position')
-        if position:
-            content['position'] = position
-        else:
-            content['position'] = DevicePositionModel.objects.filter(
-                is_delete=False,
-                cardevicepositionmodel__car__name=car_name)
-
-        start_time = request.GET.get('start_time', now_date_30())
-        if start_time:
-            content['start_time'] = start_time
-        end_time = request.GET.get('end_time', now_date())
-        if end_time:
-            content['end_time'] = end_time
-        #
-        mode_codes = request.GET.get('mode_codes')
-        if mode_codes:
-            content['modes'] = mode_codes
-        else:
-            content['modes'] = ModeInfoModel.objects.all()
-
-        test_versions = request.GET.get('test_versions')
-        if test_versions:
-            content['test_versions'] = test_versions
-        else:
-            content['test_versions'] = TestVersionModel.objects.filter(
-                is_delete=False, date__lte=content['end_time'], date__gte=content['start_time'],
-                mode__in=content['modes'], position__in=content['position']
-            )
-
-        self.object = MonkeyReportME5Form(
-            data={
-                'position': content['position'], 'mode_codes': content['modes'],
-                'test_versions': content['test_versions']},
-            test_versions_queryset=TestVersionModel.objects.filter(
-                is_delete=False, date__lte=content['end_time'], date__gte=content['start_time'],
-                mode__in=content['modes'], position__in=content['position']
-            ),
-            initial={
-                # 'test_versions': content['test_versions'],
-                'start_time': start_time, 'end_time': end_time,
-                'mode_codes': content['modes'],
-            })
-        self.object.is_valid()
-        print(self.object.errors)
-        print(self.object.cleaned_data)
-        return super(MonkeyReportME5View, self).get(request, *args, **kwargs)
-
-    def get_test_version(self):
-        pass
-
-    def form_query(self):
-        """
-        查询表单
-        """
-        return
-
     def report_1(self, queryset):
-        report_dict = {}
-        for obj in queryset:
-            report_error_obj = ReportErrorTotalModel.objects.filter(report_total_id=obj.id).first()
-            test_version_obj = TestVersionModel.objects.filter(id=obj.test_version_id).first()
-            report_dict[test_version_obj.code] = report_error_obj.to_dict()
-        return report_dict
+        """
+        需要展示的内容：
+        test_version[x]
+        error_number[y]
+        content[19errors]
+        """
+        return {
+            obj.report_total.test_version.code: obj.to_dict() for obj in queryset
+        }

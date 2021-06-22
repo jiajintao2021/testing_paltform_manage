@@ -12,8 +12,8 @@ def open_file(path, size=1024):
 
 
 def now_date():
-    return datetime.datetime.now().date()
+    return datetime.datetime.now().date().strftime('%Y-%m-%d')
 
 
 def now_date_30():
-    return now_date() + datetime.timedelta(days=-30)
+    return (datetime.datetime.now().date() + datetime.timedelta(days=-30)).strftime('%Y-%m-%d')
