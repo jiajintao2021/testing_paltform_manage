@@ -28,6 +28,8 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'testing_manage.CustomUsers'
 
+
+
 LOGIN_URL = '/testing/login/'
 LOGIN_REDIRECT_URL = '/testing/'
 
@@ -51,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'widget_tweaks',
     'testing_manage',
     'report_manage'
 ]
@@ -132,7 +134,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

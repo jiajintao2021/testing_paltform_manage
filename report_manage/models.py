@@ -74,22 +74,29 @@ class AbsReportErrorModel(models.Model):
             'tombstone': self.tombstone,
             'vm_exitin': self.vm_exitin,
             'shutting_down_vm': self.shutting_down_vm,
-            'activity_pause_timeout': self.fatal_exception,
-            'app_not_response': self.fatal_exception,
-            'null_pointer_exception': self.fatal_exception,
-            'illegal_state_exception': self.fatal_exception,
-            'format_exception': self.fatal_exception,
-            'not_found_exception': self.fatal_exception,
-            'init_before_start_services': self.fatal_exception,
-            'out_of_memory': self.fatal_exception,
-            'anr_in': self.fatal_exception,
-            'exit_zygote': self.fatal_exception,
-            'sv_gpio_probe_start': self.fatal_exception,
-            'kernel_panic': self.fatal_exception,
-            'kernel_bug': self.fatal_exception,
-            'causing_watchdog_bite': self.fatal_exception,
-            'waring': self.fatal_exception,
+            'activity_pause_timeout': self.activity_pause_timeout,
+            'app_not_response': self.app_not_response,
+            'null_pointer_exception': self.null_pointer_exception,
+            'illegal_state_exception': self.illegal_state_exception,
+            'format_exception': self.format_exception,
+            'not_found_exception': self.not_found_exception,
+            'init_before_start_services': self.init_before_start_services,
+            'out_of_memory': self.out_of_memory,
+            'anr_in': self.anr_in,
+            'exit_zygote': self.exit_zygote,
+            'sv_gpio_probe_start': self.sv_gpio_probe_start,
+            'kernel_panic': self.kernel_panic,
+            'kernel_bug': self.kernel_bug,
+            'causing_watchdog_bite': self.causing_watchdog_bite,
+            'waring': self.waring,
         }
+
+    def sum(self):
+        return self.fatal_exception + self.tombstone + self.vm_exitin + self.shutting_down_vm + \
+               self.activity_pause_timeout + self.app_not_response + self.null_pointer_exception + \
+               self.illegal_state_exception + self.format_exception + self.not_found_exception + \
+               self.init_before_start_services + self.out_of_memory + self.anr_in + self.exit_zygote + self.kernel_bug + \
+               self.kernel_panic + self.causing_watchdog_bite + self.waring
 
 
 class CarInfoModel(models.Model):
@@ -147,7 +154,7 @@ class ModeInfoModel(models.Model):
         return self.mode
 
 
-class TestTypeInfo(models.Model):
+class TestTypeInfoModel(models.Model):
     type = models.CharField('测试类型', max_length=32, unique=True, null=False, blank=False, default='')
     code = models.CharField('测试类型编码', max_length=16, unique=True, blank=False, null=False, default='')
     alias = models.CharField('测试类型别名', max_length=32, unique=True, blank=True, null=True, default='')
@@ -159,6 +166,62 @@ class TestTypeInfo(models.Model):
         ordering = ['-id']
 
 
+class ErrorInfoModel(models.Model):
+    """
+    异常表
+    """
+    error_name = models.CharField('错误名称', max_length=128, null=False, blank=False, default='')
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
+
+    class Meta:
+        db_table = 'error_info'
+        permissions = ()
+        ordering = ['-id']
+        verbose_name = '异常类型管理'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.error_name
+
+
+class ErrorLevelModel(models.Model):
+    """
+    异常等级表
+    """
+    level = models.IntegerField('异常级别', null=False, blank=False, unique=True, default=0)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
+
+    class Meta:
+        db_table = 'error_level'
+        permissions = ()
+        ordering = ['-level']
+        verbose_name = '异常级别'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return f'异常等级：{self.level}'
+
+
+class ErrorNameLevelModel(models.Model):
+    """
+    异常等级
+    """
+    error_name = models.OneToOneField(ErrorInfoModel, unique=True, on_delete=DO_NOTHING, null=False, blank=False,
+                                      default=0)
+    level = models.ForeignKey(ErrorLevelModel, null=False, blank=False, on_delete=DO_NOTHING, default=0)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
+
+    class Meta:
+        db_table = 'error_name_level'
+        permissions = ()
+        ordering = ['level']
+        verbose_name = '异常级别管理'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return str(self.error_name)
+
+
 class TestVersionModel(models.Model):
     """
     测试版本
@@ -166,11 +229,8 @@ class TestVersionModel(models.Model):
     version = models.CharField('测试版本编号', max_length=255, null=False, blank=False, default='')
     code = models.CharField('唯一编号', max_length=128, unique=True, null=False, blank=False, default='')
     position = models.ForeignKey(DevicePositionModel, on_delete=DO_NOTHING, default=0)
-    # position_id = models.IntegerField('设备类型', null=False, blank=False, default=0)
     car = models.ForeignKey(CarInfoModel, on_delete=DO_NOTHING, default=0)
-    # car_id = models.IntegerField('汽车类型', null=False, blank=False, default=0)
     mode = models.ForeignKey(ModeInfoModel, on_delete=DO_NOTHING, default=0)
-    # mode_id = models.IntegerField('编译模式', null=False, blank=False, default=0)
     date = models.DateTimeField('日期', null=True)
     is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
@@ -183,13 +243,41 @@ class TestVersionModel(models.Model):
         return self.code
 
 
+class LevelErrorNumberModel(models.Model):
+    """
+    等级异常个数
+    """
+    error_level = models.ForeignKey(ErrorLevelModel, on_delete=DO_NOTHING, null=False, blank=False, default=1)
+    number = models.IntegerField('异常数量', null=False, blank=False, default=0)
+    test_version = models.ForeignKey(TestVersionModel, on_delete=DO_NOTHING, null=False, blank=False, default=0)
+    is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
+
+    class Meta:
+        db_table = 'error_level_number'
+        permissions = ()
+        ordering = ['-id']
+
+    def to_dict(self):
+        return {
+            'error_level': self.error_level.level,
+            'error_number': self.number,
+            'test_version': self.test_version.code,
+        }
+
+    def to_test_version(self):
+        return self.test_version.version
+
+    def to_version_code(self):
+        return self.test_version.code
+
+    def to_level(self):
+        return str(self.error_level.level)
+
+
 class ReportOriginModel(models.Model):
     user = models.ForeignKey(CustomUsers, on_delete=DO_NOTHING, default=0)
-    # user_id = models.IntegerField('用户ID', null=False, blank=False, default=0)
     test_version = models.ForeignKey(TestVersionModel, on_delete=DO_NOTHING, default=0)
-    # test_version_id = models.IntegerField('测试版本ID', null=False, blank=False, default=0)
-    test_type = models.ForeignKey(TestTypeInfo, on_delete=DO_NOTHING, default=0)
-    # test_type_id = models.IntegerField('测试类型ID', null=False, blank=False, default=0)
+    test_type = models.ForeignKey(TestTypeInfoModel, on_delete=DO_NOTHING, default=0)
     device = models.CharField('设备编号', max_length=128, null=False, blank=False, default='')
     test_start_time = models.DateTimeField('测试开始时间')
     test_end_time = models.DateTimeField('测试结束时间')
@@ -214,15 +302,13 @@ class ReportErrorOriginModel(AbsReportErrorModel):
 
 class ReportTotalModel(models.Model):
     test_version = models.ForeignKey(TestVersionModel, on_delete=DO_NOTHING, default=0)
-    test_type = models.ForeignKey(TestTypeInfo, on_delete=DO_NOTHING, default=0)
-    # test_version_id = models.IntegerField('测试版本ID', null=False, blank=False, default=0)
-    # test_type_id = models.IntegerField('测试类型ID', null=False, blank=False, default=0)
+    test_type = models.ForeignKey(TestTypeInfoModel, on_delete=DO_NOTHING, default=0)
     create_time = models.DateTimeField('记录创建时间', default=timezone.now)
     is_delete = models.BooleanField('是否删除', null=False, blank=False, default=False)
 
     class Meta:
         db_table = 'report_total'
-        ordering = ['-id']
+        ordering = ['-create_time']
         permissions = ()
 
 

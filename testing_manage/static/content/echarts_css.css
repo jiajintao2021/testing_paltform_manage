@@ -1,9 +1,24 @@
 .report {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .report-col-stacked-chart {
     width: 1000px;
-    height: 700px;
-    margin: 3rem;
+    /*height: 500px;*/
+    height: 600px;
+    /*margin: 3rem;*/
+}
+
+.report-col-stacked-chart-1 {
+    width: 1000px;
+    height: 500px;
+    /*margin: 3rem;*/
+}
+
+.report-col-stacked-chart-3 {
+    width: 1000px;
+    height: 500px;
 }

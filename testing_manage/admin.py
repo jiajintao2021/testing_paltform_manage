@@ -9,6 +9,8 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm, forms, R
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
+from report_manage.forms import ErrorLevelForm, ErrorInfoForm, ErrorNameLevelForm
+from report_manage.models import ErrorLevelModel, ErrorInfoModel, ErrorNameLevelModel
 from testing_manage.models import CustomUsers, FilesModel
 from testing_manage.forms import FilesAddForm
 
@@ -78,6 +80,40 @@ class FilesAdmin(admin.ModelAdmin):
     search_fields = ['name', ]
 
 
+class ErrorLevelAdmin(admin.ModelAdmin):
+    form = ErrorLevelForm
+    fieldsets = [
+        (None, {'fields': ['level', 'is_delete']})
+    ]
+    list_display = ['level', 'is_delete']
+    list_filter = ['is_delete', 'level']
+    search_fields = ['level']
+
+
+class ErrorInfoAdmin(admin.ModelAdmin):
+    form = ErrorInfoForm
+    fieldsets = [
+        (None, {'fields': ['error_name', 'is_delete']})
+    ]
+    list_display = ['error_name', 'is_delete']
+    list_filter = ['is_delete']
+    search_fields = ['error_name']
+
+
+class ErrorNameLevelAdmin(admin.ModelAdmin):
+    form = ErrorNameLevelForm
+    fieldsets = [
+        (None, {'fields': ['error_name', 'level', 'is_delete']})
+    ]
+    list_display = ['error_name', 'level', 'is_delete']
+    list_filter = ['is_delete', 'level']
+    search_fields = ['error_name', 'level']
+
+
 admin.site.register(CustomUsers, CustomUserAdmin)
 admin.site.register(FilesModel, FilesAdmin)
+admin.site.register(ErrorLevelModel, ErrorLevelAdmin)
+admin.site.register(ErrorInfoModel, ErrorInfoAdmin)
+admin.site.register(ErrorNameLevelModel, ErrorNameLevelAdmin)
+
 admin.site.unregister(Group)

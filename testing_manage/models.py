@@ -46,10 +46,10 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUsers(AbstractBaseUser):
 
-    email = models.CharField('电子邮箱', max_length=64, null=False, unique=True)
-    username = models.CharField('登录账号', max_length=16, null=False, default='')
+    email = models.CharField('电子邮箱', max_length=128, null=False, unique=True)
+    username = models.CharField('登录账号', max_length=64, null=False, default='')
     password = models.CharField('账号密码', max_length=128, null=False, unique=True)
-    name = models.CharField('你的名字', max_length=16, null=False, default='')
+    name = models.CharField('你的名字', max_length=64, null=False, default='')
     is_active = models.BooleanField('是否激活', null=False, default=True)
     is_superuser = models.BooleanField('是否是超级管理员',null=False, default=False)
     is_staff = models.BooleanField('是否是管理员', null=False, default=True)

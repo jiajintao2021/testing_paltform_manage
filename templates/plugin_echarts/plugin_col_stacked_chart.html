@@ -1,0 +1,66 @@
+<div class="report-col-stacked-chart" id="col-stacked-chart-1"></div>
+
+<script type="text/javascript">
+        var chart = echarts.init(document.getElementById('col-stacked-chart'))
+
+        var reportTotal = {{ report_total|safe }}
+{#        x 坐标 #}
+        var xAxisList = []
+        var options = {}
+        var series = []
+        var errorKeys = []
+
+        {#version: {errorKey1: [all version],}#}
+{#            横坐标为测试版本号 test_version #}
+        for (var testVersion in reportTotal) {
+            xAxisList.push(testVersion)
+            for (var errorKey in reportTotal[testVersion]) {
+                if (!options.hasOwnProperty(errorKey)) {
+                    options[errorKey] = []
+                    errorKeys.push(errorKey)
+                }
+                options[errorKey].push(reportTotal[testVersion][errorKey])
+            }
+        }
+        for (var optionKey in options) {
+            series.push(
+                {
+                    name: optionKey,
+                    type: 'bar',
+                    stack: 'error',
+                    emphasis: {focus: 'series'},
+                    data: options[optionKey]
+                }
+            )
+        }
+
+        var option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        legend: {
+            {#data: ['邮件营销', '联盟广告']#}
+            data: errorKeys,
+        },
+        grid: {
+            left: '5%',
+            right: '5%',
+            bottom: '3%',
+            top: '20%',
+            containLabel: true},
+        xAxis: [{
+                type: 'category',
+                {#data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']}],#}
+                data: xAxisList,
+                axisLabel: {
+                    interval: 0,
+                    rotate: 30
+                }}],
+        yAxis: [{type: 'value'}],
+        series: series}
+
+        chart.setOption(option)
+    </script>

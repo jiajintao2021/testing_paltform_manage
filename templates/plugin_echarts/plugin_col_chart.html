@@ -1,0 +1,48 @@
+<div class="report-col-stacked-chart" id="col-stacked-chart-1"></div>
+
+<script type="text/javascript">
+        {#var chart = echarts.init(document.getElementById('col-stacked-chart'))#}
+
+        {#var reportTotal = {{ report_total|safe }}#}
+{#        x 坐标 #}
+{#        var xAxisList = []#}
+{#        var colAxisList = []#}
+{#        var options = {}#}
+{#        var series = []#}
+{#        var errorKeys = []#}
+
+        {#version: {errorKey1: [all version],}#}
+{#            横坐标为测试版本号 test_version #}
+
+        {#for (testVersion in reportTotal) {#}
+        {#    for (var errorKey in reportTotal[testVersion]) {#}
+        {#        xAxisList.push(errorKey)#}
+        {#        colAxisList.push(reportTotal[testVersion][errorKey])#}
+        {#    }}#}
+
+        {#var option = {#}
+        {#    xAxis: {#}
+        {#        type: 'category',#}
+                {#data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']#}
+        {#        data: xAxisList,#}
+        {#        axisLabel: {#}
+        {#            interval: 0,#}
+        {#            rotate: 30#}
+        {#        }#}
+        {#    },#}
+        {#    grid: {#}
+            {#left: '5%',#}
+            {#right: '5%',#}
+        {#    bottom: '5%',#}
+            {#top: '20%',#}
+        {#    containLabel: true},#}
+        {#    yAxis: {#}
+        {#        type: 'value'#}
+        {#    },#}
+        {#    series: [{#}
+        {#        data: colAxisList,#}
+        {#        type: 'bar'#}
+        {#    }]};#}
+        {##}
+        {#chart.setOption(option)#}
+    </script>
