@@ -1,0 +1,374 @@
+{% extends 'testing_platform/index.html' %}
+{% load widget_tweaks %}
+
+{% block left_bar %}
+    {% include 'left_bar.html' with status_content='monkey_report' %}
+{% endblock %}
+
+{% block content_detail_header %}
+    <div class="content-header">
+        <div class="detail-header-nav">
+            <ul class="content-ul-flex nav-pills">
+                <li class="content-ul-li nav-item">
+                    <a class="nav-link" href="{% url 'monkey-report-me5' %}">
+                        <p>ME5</p>
+                    </a>
+                </li>
+                <li class="content-ul-li nav-item">
+                    <a class="nav-link active" href="{% url 'monkey-report-me7' %}">
+                        <p>ME7</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_detail %}
+    <form action="{% url 'monkey-report-me7' %}" method="GET">
+        <div class="detail-header-query">
+            <div class="content-ul-flex">
+                {% render_field test_version_query_object.start_time|add_label_class:'font-wide-title block' %}
+                {% render_field test_version_query_object.start_time %}
+                {% render_field test_version_query_object.end_time|attr:'type:date' %}
+            </div>
+            <div class="content-ul-flex">
+                {% render_field test_version_query_object.mode_codes|add_label_class:'font-wide-title block' %}
+                {% render_field test_version_query_object.mode_codes %}
+            </div>
+            <div class="content-ul-flex">
+                {% render_field test_version_query_object.position|add_label_class:'font-wide-title block' %}
+                {% render_field test_version_query_object.position %}
+            </div>
+            <div class="content-ul-flex">
+                {% render_field test_version_object.test_versions|add_label_class:'font-wide-title block' %}
+                {% render_field test_version_object.test_versions|add_class:'checkbox-all from-check-input' %}
+                <div class="button-group-1">
+                    <button class="button-font checkbox-all-b-i" type="button">全选</button>
+                    <button class="button-font checkbox-all-b-o" type="button">清除</button>
+                </div>
+            </div>
+            <div>
+                <input type="submit" value="统计" class="btn btn-primary btn-sm">
+            </div>
+        </div>
+    </form>
+    <div class="report" id="monkey-report">
+        {% if report_total_status_1 == 1 %}
+            <div class="report-col-stacked-chart-1" id="col-stacked-chart-1"></div>
+        {% else %}
+            <div class="report-col-stacked-chart" id="col-stacked-chart-1"></div>
+        {% endif %}
+        {% if report_total_status_2 == 1 %}
+            <div class="report-col-stacked-chart-1" id="col-stacked-chart-2"></div>
+        {% else %}
+            <div class="report-col-stacked-chart" id="col-stacked-chart-2"></div>
+        {% endif %}
+        <div>
+            <div class="report-col-stacked-chart-3" id="col-stacked-chart-3"></div>
+            <div class="report-col-stacked-chart-3" id="col-stacked-chart-4"></div>
+        </div>
+
+    </div>
+    <script>
+        $('.checkbox-all-b-i').click(function (){
+            $('.checkbox-all').attr('checked', true);});
+        $('.checkbox-all-b-o').click(function (){
+            $('.checkbox-all').removeAttr('checked');});
+
+        {#var echarts;#}
+        var reportTotal1 = echarts.init(document.getElementById('col-stacked-chart-1'));
+        var reportTotal2 = echarts.init(document.getElementById('col-stacked-chart-2'));
+        var reportTotal3 = echarts.init(document.getElementById('col-stacked-chart-3'));
+        var reportTotal4 = echarts.init(document.getElementById('col-stacked-chart-4'));
+
+        {% if report_total_status_1 == 1 %}
+            eChartReportTotal1()
+        {% else %}
+            eChartReportTotal11()
+        {% endif %}
+        {% if report_total_status_2 == 1 %}
+            eChartReportTotal22()
+        {% else %}
+            eChartReportTotal2()
+        {% endif %}
+        eChartReportTotal3()
+        eChartReportTotal4()
+
+        function eChartReportTotal1() {
+            var reportTotal = {{ report_total_1|safe }}
+            var xAxisList = []
+            var colAxisList = []
+
+            for (testVersion in reportTotal) {
+                for (var errorKey in reportTotal[testVersion]) {
+                    xAxisList.push(errorKey)
+                    colAxisList.push(reportTotal[testVersion][errorKey])
+                }}
+            var option = {
+                title: {
+                    text: '异常类型数量堆积图 ' + testVersion,
+                    left: 'center',
+                },
+                xAxis: {
+                    type: 'category',
+                    {#data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']#}
+                    data: xAxisList,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30}},
+                grid: {
+                    bottom: '5%',
+                    containLabel: true},
+                yAxis: {
+                    type: 'value'},
+                series: [{
+                    data: colAxisList,
+                    type: 'bar'}]
+            };
+            reportTotal1.setOption(option)
+        }
+        function eChartReportTotal11() {
+            var reportTotal = {{ report_total_1|safe }}
+            var xAxisList = []
+            var options = {}
+            var series = []
+            var errorKeys = []
+            for (var testVersion in reportTotal) {
+            xAxisList.push(testVersion)
+                for (var errorKey in reportTotal[testVersion]) {
+                    if (!options.hasOwnProperty(errorKey)) {
+                        options[errorKey] = []
+                        errorKeys.push(errorKey)
+                    }
+                    options[errorKey].push(reportTotal[testVersion][errorKey])
+                }
+            }
+            for (var optionKey in options) {
+                series.push(
+                    {
+                        name: optionKey,
+                        type: 'bar',
+                        stack: 'error',
+                        emphasis: {focus: 'series'},
+                        data: options[optionKey]
+                    }
+                )
+            }
+            var option = {
+                title: {
+                    text: '异常类型数量堆积图',
+                    left: 'center',
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }},
+                legend: {
+                    data: errorKeys,
+                    top: '10%',
+                },
+                grid: {
+                    top: '30%',
+                    containLabel: true},
+                xAxis: [{
+                        type: 'category',
+                        {#data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']}],#}
+                        data: xAxisList,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 30
+                        }}],
+                yAxis: [{type: 'value'}],
+                series: series}
+
+            reportTotal1.setOption(option, true)
+        }
+        function eChartReportTotal2() {
+            var reportTotal = {{ report_total_2|safe }}
+            var xAxisList = []
+            var options = {}
+            var series = []
+            var errorKeys = []
+            for (var testVersion in reportTotal) {
+                xAxisList.push(testVersion);
+                for (var errorLevel in reportTotal[testVersion]){
+                    var levelValue = reportTotal[testVersion][errorLevel]
+                    if (!options.hasOwnProperty(errorLevel)) {
+                        options[errorLevel] = []
+                        errorKeys.push(errorLevel)
+                    }
+                    options[errorLevel].push(levelValue)
+                }
+
+            }
+            for (var optionKey in options) {
+                series.push(
+                    {
+                        name: optionKey,
+                        type: 'bar',
+                        stack: 'error',
+                        emphasis: {focus: 'series'},
+                        data: options[optionKey]
+                    }
+                )
+            }
+            var option = {
+                title: {
+                    text: '异常等级堆积图',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow'}        // 默认为直线，可选为：'line' | 'shadow'
+                },
+                legend: {
+                    {#data: ['邮件营销', '联盟广告']#}
+                    data: errorKeys,
+                    top: '10%',
+                },
+                grid: {
+                    top: '20%',
+                    bottom: '20%',
+                    containLabel: true},
+                xAxis: [{
+                        type: 'category',
+                        {#data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']}],#}
+                        data: xAxisList,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 30
+                        }}],
+                yAxis: [{type: 'value'}],
+                series: series}
+            reportTotal2.setOption(option)
+        }
+        function eChartReportTotal22() {
+            var reportTotal = {{ report_total_2|safe }}
+            var xAxisList = []
+            var colAxisList = []
+            for (var testVersion in reportTotal) {
+                for (var errorKey in reportTotal[testVersion]) {
+                    colAxisList.push(reportTotal[testVersion][errorKey])
+                    xAxisList.push(errorKey)
+                }
+            }
+            var option = {
+                title: {
+                    text: '异常等级堆积图 ' + testVersion,
+                    left: 'center'
+                },
+                xAxis: {
+                    type: 'category',
+                    {#data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']#}
+                    data: xAxisList,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 0}},
+                grid: {
+                    bottom: '5%',
+                    top: '20%',
+                    containLabel: true},
+                yAxis: {
+                    type: 'value'},
+                series: [{
+                    data: colAxisList,
+                    type: 'bar'}]
+            };
+
+            reportTotal2.setOption(option, true)
+        }
+        function eChartReportTotal3() {
+            var reportTotal = {{ report_total_3|safe }}
+            var dataValue = []
+            for (var key in reportTotal) {
+                dataValue.push(
+                    {
+                        name: key,
+                        value: reportTotal[key],
+                    }
+                )
+            }
+            var option = {
+                title: {
+                    text: '异常数量TOP10 ',
+                    left: 'center'
+                },
+                grid: {
+                    {#bottom: '5%',#}
+                    {#top: '20%',#}
+                    containLabel: true},
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                {
+                    name: 'top',
+                    type: 'pie',
+                    radius: '50%',
+                    center: ['55%', '45%', 0, 0],
+                    data: dataValue,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'}
+                }}]
+            };
+            reportTotal3.setOption(option, true)
+        }
+        function eChartReportTotal4() {
+            var reportTotal = {{ report_total_4|safe }}
+            var dataValue = []
+            for (var key in reportTotal) {
+                dataValue.push(
+                    {
+                        name: '错误等级:' + key,
+                        value: reportTotal[key],
+                    }
+                )
+            }
+            var option = {
+                title: {
+                    text: '错误等级占比',
+                    left: 'center',
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    top: 40
+                },
+                series: [
+                {
+                    name: '百分比',
+                    type: 'pie',
+                    radius: '50%',
+                    center: ['55%', '45%', 0, 0],
+                    data: dataValue,
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 11,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'}
+                }}]
+            };
+            reportTotal4.setOption(option, true)
+        }
+
+        console.log(
+            $('.nav-link').classList
+        )
+
+    </script>
+{% endblock %}

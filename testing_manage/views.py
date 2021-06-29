@@ -57,8 +57,8 @@ class FilesAddView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('files-list')
 
 
-class MonkeyReportView(LoginRequiredMixin, SingleObjectMixin, TemplateView):
-    template_name = 'testing_platform/monkey_report/monkey_report.html'
+class MonkeyReportBaseView(LoginRequiredMixin, TemplateView):
+    # template_name = 'testing_platform/monkey_report/monkey_report_me5.html'
 
     def get(self, request, *args, **kwargs):
         car_name = kwargs.get('car_name')
@@ -81,19 +81,18 @@ class MonkeyReportView(LoginRequiredMixin, SingleObjectMixin, TemplateView):
         self.test_version_object = ReportTestVersionsForm(
             test_version_queryset=test_versions_all, data={'test_versions': test_versions})
         self.test_version_object.is_valid()
-        return super(MonkeyReportView, self).get(request, *args, **kwargs)
+        return super(MonkeyReportBaseView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         """
         根据测试版本号的个数，判断展示的类型
         """
-        context = super(SingleObjectMixin, self).get_context_data(**kwargs)
+        context = super(MonkeyReportBaseView, self).get_context_data(**kwargs)
         context['test_version_query_object'] = self.test_version_query_object
         context['test_version_object'] = self.test_version_object
         test_versions = self.test_version_object.data.get('test_versions')
         # 错误类型堆叠柱形图
         report_error_total_queryset = ReportErrorTotalModel.objects.filter(report_total__test_version__in=test_versions)
-        # print(ReportErrorTotalModel.objects.filter(report_total__test_version__in=test_versions))
         context['report_total_1'] = self.report_1(report_error_total_queryset)
         # 状态为1的时候坐标转变 横坐标为错误类型，纵坐标个数
         context['report_total_status_1'] = 0
@@ -171,5 +170,12 @@ class MonkeyReportView(LoginRequiredMixin, SingleObjectMixin, TemplateView):
             if str(level) not in _dict:
                 _dict[str(level)] = 0
             _dict[str(level)] += number
-        print(_dict)
         return _dict
+
+
+class MonkeyReportMe5View(MonkeyReportBaseView):
+    template_name = 'testing_platform/monkey_report/monkey_report_me5.html'
+
+
+class MonkeyReportMe7View(MonkeyReportBaseView):
+    template_name = 'testing_platform/monkey_report/monkey_report_me7.html'

@@ -21,8 +21,8 @@ class AbsReportErrorModel(models.Model):
     tombstone = models.IntegerField('Tombstone', null=False, blank=False, default=0)
     vm_exitin = models.IntegerField('Tombstone', null=False, blank=False, default=0)
     shutting_down_vm = models.IntegerField('Shutting down VM', null=False, blank=False, default=0)
-    activity_pause_timeout = models.IntegerField(
-        'Activity pause timeout', null=False, blank=False, default=0, help_text='Activity pause timeout')
+    # activity_pause_timeout = models.IntegerField(
+    #     'Activity pause timeout', null=False, blank=False, default=0, help_text='Activity pause timeout')
     app_not_response = models.IntegerField(
         'Application is not responding', null=False, blank=False, default=0, help_text='Application is not responding')
     null_pointer_exception = models.IntegerField(
@@ -74,7 +74,7 @@ class AbsReportErrorModel(models.Model):
             'tombstone': self.tombstone,
             'vm_exitin': self.vm_exitin,
             'shutting_down_vm': self.shutting_down_vm,
-            'activity_pause_timeout': self.activity_pause_timeout,
+            # 'activity_pause_timeout': self.activity_pause_timeout,
             'app_not_response': self.app_not_response,
             'null_pointer_exception': self.null_pointer_exception,
             'illegal_state_exception': self.illegal_state_exception,
@@ -93,7 +93,7 @@ class AbsReportErrorModel(models.Model):
 
     def sum(self):
         return self.fatal_exception + self.tombstone + self.vm_exitin + self.shutting_down_vm + \
-               self.activity_pause_timeout + self.app_not_response + self.null_pointer_exception + \
+               + self.app_not_response + self.null_pointer_exception + \
                self.illegal_state_exception + self.format_exception + self.not_found_exception + \
                self.init_before_start_services + self.out_of_memory + self.anr_in + self.exit_zygote + self.kernel_bug + \
                self.kernel_panic + self.causing_watchdog_bite + self.waring

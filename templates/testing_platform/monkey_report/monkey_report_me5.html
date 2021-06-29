@@ -8,14 +8,14 @@
 {% block content_detail_header %}
     <div class="content-header">
         <div class="detail-header-nav">
-            <ul class="content-ul-flex nav nav-pills">
+            <ul class="content-ul-flex nav-pills">
                 <li class="content-ul-li nav-item">
-                    <a class="nav-link active" href="{% url 'monkey-report' car_name='ME5' %}">
+                    <a class="nav-link active" href="{% url 'monkey-report-me5' %}">
                         <p>ME5</p>
                     </a>
                 </li>
                 <li class="content-ul-li nav-item">
-                    <a class="nav-link" href="">
+                    <a class="nav-link" href="{% url 'monkey-report-me7' %}">
                         <p>ME7</p>
                     </a>
                 </li>
@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block content_detail %}
-    <form action="{% url 'monkey-report' car_name='ME5' %}" method="GET">
+    <form action="{% url 'monkey-report-me5' %}" method="GET">
         <div class="detail-header-query">
             <div class="content-ul-flex">
                 {% render_field test_version_query_object.start_time|add_label_class:'font-wide-title block' %}
